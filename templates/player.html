@@ -1,0 +1,81 @@
+{% extends 'admin_layout.html' %}
+{% block content %}
+    <div style="margin-bottom: 10px" class="clearfix">
+        <a class="btn btn-success" href="/player/add/" target="_blank">录入玩家信息</a>
+        <div style="float: right; width: 300px">
+            <div>
+                <form method="get">
+                    <div class="input-group">
+                        <input type="text" name="s" class="form-control" placeholder="请按玩家编号进行搜索"
+                               value="{{ data }}">
+                        <span class="input-group-btn">
+            <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-zoom-in"
+                                                                aria-hidden="true"></span></button>
+          </span>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div>
+        <div class="panel panel-default">
+            <div class="panel-heading">玩家列表</div>
+            <div class="panel-body">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>玩家编号</th>
+                        <th>姓名</th>
+                        <th>密码</th>
+                        <th>游玩时间（min）</th>
+                        <th>游玩局数（次）</th>
+                        <th>获得最高分</th>
+                        <th>合作次数（次）</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for player in player_list %}
+                        <tr>
+                            <td>{{ player.player_id }}</td>
+                            <td>{{ player.name }}</td>
+                            <td>{{ player.password }}</td>
+                            <td>{{ player.play_time }}</td>
+                            <td>{{ player.played_round }}</td>
+                            <td>{{ player.max_score }}</td>
+                            <td>{{ player.number_of_cooperation }}</td>
+                            <td>
+                                <a class="btn btn-primary" href="/player/{{ player.player_id }}/edit">编辑</a>
+                                <a class="btn btn-danger"
+                                   href="/player/{{ player.player_id }}/delete">删除</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    {% endfor %}
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <ul class="pagination">
+            {{ page }}
+
+        </ul>
+
+        <form method="get">
+            <div class="input-group" style="width: 200px">
+                <input type="text" name="page" class="form-control" placeholder="页码">
+                <span class="input-group-btn">
+                <button class="btn btn-default" type="submit">跳转</button>
+                </span>
+            </div>
+        </form>
+
+    </div>
+
+
+{% endblock %}

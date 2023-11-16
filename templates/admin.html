@@ -1,0 +1,72 @@
+<!-- extends 表示这一页面继承自admin_layout -->
+
+{% extends 'admin_layout.html' %}
+{% block content %}
+    <div style="margin-bottom: 10px" class="clearfix">
+        <div style="float: right; width: 300px">
+            <div>
+                <form method="get">
+                    <div class="input-group">
+                        <!-- 之前传入的 data在此处显示 -->
+                        <input type="text" name="s" class="form-control" placeholder="请按管理员id搜素" value="{{ data }}">
+                        <span class="input-group-btn">
+            <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-zoom-in"
+                                                                aria-hidden="true"></span></button>
+          </span>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div>
+        <div class="panel panel-default">
+            <div class="panel-heading">管理员列表</div>
+            <div class="panel-body">
+                <table class="table table-bordered">
+                <!-- 创建列表，显示前端传入的数据 -->
+                    <thead>
+                    <tr>
+                        <th>管理员编号</th>
+                        <th>管理员名</th>
+                        <th>管理员密码</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- 将之前传入的从数据库中查询得到的学生列表在此处显示，将每一个学生的信息取出进行展示 -->
+                    {% for admin in admin_list %}
+                        <tr>
+                            <td>{{ admin.admin_id }}</td>
+                            <td>{{ admin.admin_name }}</td>
+                            <td>{{ admin.admin_password }}</td>
+                        </tr>
+
+                        </tbody>
+                    {% endfor %}
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+     <div>
+        <ul class="pagination">
+            {{ page }}
+
+        </ul>
+
+        <form method="get">
+            <div class="input-group" style="width: 200px">
+                <input type="text" name="page" class="form-control" placeholder="页码">
+                <span class="input-group-btn">
+                <button class="btn btn-default" type="submit">跳转</button>
+                </span>
+            </div>
+        </form>
+
+    </div>
+
+
+{% endblock %}
