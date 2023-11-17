@@ -1,0 +1,82 @@
+<!-- extends 表示这一页面继承自admin_layout -->
+
+{% extends 'admin_layout.html' %}
+{% block content %}
+    <div style="margin-bottom: 10px" class="clearfix">
+        <div style="float: right; width: 300px">
+            <div>
+                <form method="get">
+                    <div class="input-group">
+                        <!-- 之前传入的 data在此处显示 -->
+                        <input type="text" name="s" class="form-control" placeholder="请按排行榜编号搜素" value="{{ data }}">
+                        <span class="input-group-btn">
+            <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-zoom-in"
+                                                                aria-hidden="true"></span></button>
+          </span>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div>
+        <div class="panel panel-default">
+            <div class="panel-heading">排行榜记录</div>
+            <div class="panel-body">
+                <table class="table table-bordered">
+                <!-- 创建列表，显示前端传入的数据 -->
+                    <thead>
+                    <tr>
+                        <th>记录编号</th>
+                        <th>玩家名</th>
+                        <th>分数</th>
+                        <th>上传时间</th>
+                        <th>队伍</th>
+                        <th>编辑</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- 将之前传入的从数据库中查询得到的学生列表在此处显示，将每一个学生的信息取出进行展示 -->
+                    {% for record in record_list %}
+                        <tr>
+                            <td>{{ record.record_id   }}</td>
+                            <td>{{ record.player.name }}</td>
+                            <td>{{ record.score }}</td>
+                            <td>{{ record.upload_time }}</td>
+                            <td>{{ record.team.team_name }}</td>
+                            <td>
+                                <a class="btn btn-primary" href="/record/{{ record.record_id }}/edit">编辑</a>
+                                <a class="btn btn-danger"
+                                   href="/record/{{ record.record_id }}/delete">删除</a>
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    {% endfor %}
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+     <div>
+        <ul class="pagination">
+            {{ page }}
+
+        </ul>
+
+        <form method="get">
+            <div class="input-group" style="width: 200px">
+                <input type="text" name="page" class="form-control" placeholder="页码">
+                <span class="input-group-btn">
+                <button class="btn btn-default" type="submit">跳转</button>
+                </span>
+            </div>
+        </form>
+
+    </div>
+
+
+{% endblock %}

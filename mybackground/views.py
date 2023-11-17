@@ -100,7 +100,7 @@ def admin(request):  ### 管理员信息展示
 
 def player_message(request):
     data_list = {}
-    # name = 's'的标签代表前端传入的搜索内容，用户搜索想对应的学号用户
+    # name = 's'的标签代表前端传入的搜索内容，用户搜索想对应的玩家编号
     value = request.GET.get('s', '')
     if value:
         data_list['player_id__contains'] = value
@@ -148,3 +148,39 @@ def player_edit(request, pid):
 def player_delete(request, pid):
     models.Player.objects.filter(player_id=pid).delete()
     return redirect('/player/')
+
+def record_rank(request):
+    data_list = {}
+    # name = 's'的标签代表前端传入的搜索内容，用户搜索想对应的排行榜记录号
+    value = request.GET.get('s', '')
+    if value:
+        data_list['record_id__contains'] = value
+    queryset_a = models.RankRecord.objects.filter(**data_list).order_by('record_id')
+    page_object = pagenation(request, queryset_a)
+    record_list = page_object.page_queryset
+    page_string = page_object.html()
+
+    context = {"record_list": record_list, "data": value, "page": page_string}
+
+    return render(request, 'rank.html', context)
+
+def record_edit(request,rid):
+    if request.method == 'GET':
+        row_object = models.RankRecord.objects.filter(record_id=rid).first()
+        form = rankForms(instance=row_object)
+        return render(request, 'rank_edit.html', {"form": form})
+
+    row_object = models.RankRecord.objects.filter(record_id=rid).first()
+    form = rankForms(data=request.POST, instance=row_object)
+    if form.is_valid():
+        form.save()
+        return redirect('/record/')
+
+    return render(request, 'rank_edit.html', {"form": form})
+
+def record_delete(request,rid):
+    models.RankRecord.objects.filter(record_id=rid).delete()
+    return redirect('/record/')
+
+def record_analysis(request):
+    return HttpResponse("信息展示页面")

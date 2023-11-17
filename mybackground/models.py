@@ -38,16 +38,19 @@ class Player(models.Model):
     class Meta:
         db_table = 'player'
 
+    def __str__(self):
+        return self.name
 
 class RankRecord(models.Model):
     record_id = models.AutoField(primary_key=True)
-    player = models.ForeignKey(Player, models.DO_NOTHING)
+    player = models.ForeignKey('Player', models.DO_NOTHING)
     score = models.FloatField()
     upload_time = models.DateTimeField()
     team = models.ForeignKey('Teams', models.DO_NOTHING)
 
     class Meta:
         db_table = 'rank_record'
+
 
 
 class Teams(models.Model):
@@ -59,3 +62,6 @@ class Teams(models.Model):
 
     class Meta:
         db_table = 'teams'
+
+    def __str__(self):
+        return self.team_name
