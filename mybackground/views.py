@@ -8,6 +8,7 @@ from django.db.models import Avg, Max, Min, Count, Q
 from django.shortcuts import render, redirect, HttpResponse
 from mybackground import models
 from mybackground.utile.pagenation import pagenation
+from django.http import JsonResponse
 
 
 # 定义所需要的表单样式
@@ -149,6 +150,7 @@ def player_delete(request, pid):
     models.Player.objects.filter(player_id=pid).delete()
     return redirect('/player/')
 
+
 def record_rank(request):
     data_list = {}
     # name = 's'的标签代表前端传入的搜索内容，用户搜索想对应的排行榜记录号
@@ -164,7 +166,8 @@ def record_rank(request):
 
     return render(request, 'rank.html', context)
 
-def record_edit(request,rid):
+
+def record_edit(request, rid):
     if request.method == 'GET':
         row_object = models.RankRecord.objects.filter(record_id=rid).first()
         form = rankForms(instance=row_object)
@@ -178,9 +181,57 @@ def record_edit(request,rid):
 
     return render(request, 'rank_edit.html', {"form": form})
 
-def record_delete(request,rid):
+
+def record_delete(request, rid):
     models.RankRecord.objects.filter(record_id=rid).delete()
     return redirect('/record/')
 
+
 def record_analysis(request):
-    return HttpResponse("信息展示页面")
+    # 查询榜单成绩的最高分、最低分、平均分
+    score_list = models.RankRecord.objects.all()
+
+    # 聚合查询得到相关课程的最高、最低分和平均分
+    avg = models.RankRecord.objects.all().aggregate(Avg('score'))
+    max = models.RankRecord.objects.all().aggregate(Max('score'))
+    min = models.RankRecord.objects.all().aggregate(Min('score'))
+
+    # 将需要的数据打包成字典传入前端页面展示
+    context = {'avg': avg, 'min': min, 'max': max, 'score_list': score_list}
+
+    return render(request, 'record_analysis.html', context)
+
+
+def record_chart(request):
+    # 生成榜单的图表
+    # 使用聚合函数多条件查询得到每个分数区间段的人数并附在字典之中
+    count_1 = models.RankRecord.objects.filter(Q(score__lt=0)).count()
+    search_list = []
+    tem_1 = {}
+    tem_1['name'] = '分数小于0'
+    tem_1['value'] = count_1
+    search_list.append(tem_1)
+    count = models.RankRecord.objects.filter(Q(score__lt=100) & Q(score__gte=0)).count()
+    tem_2 = {}
+    tem_2['name'] = '分数在0-100区间'
+    tem_2['value'] = count
+    search_list.append(tem_2)
+    count = models.RankRecord.objects.filter(Q(score__lt=1000) & Q(score__gte=100)).count()
+    tem_3 = {}
+    tem_3['name'] = '分数在100-1000区间'
+    tem_3['value'] = count
+    search_list.append(tem_3)
+    count = models.RankRecord.objects.filter(Q(score__gte=1000)).count()
+    tem_4 = {}
+    tem_4['name'] = '分数大于1000'
+    tem_4['value'] = count
+    search_list.append(tem_4)
+
+    # 之后将字典打包好传入前端渲染
+    result = {
+        "status": True,
+        "data": search_list
+
+    }
+    # 回应前端的Ajax请求发送成绩分析内容
+    return JsonResponse(result)

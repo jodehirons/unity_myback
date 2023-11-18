@@ -27,12 +27,15 @@ urlpatterns = [
 
     # 玩家类页面
     path("player/", views.player_message),  # 玩家信息展示
+    path("player/add/",views.player_add), #录了玩家页面
     path("player/<int:pid>/edit/", views.player_edit),  # 玩家信息编辑
     path("player/<int:pid>/delete/", views.player_delete),  # 玩家信息删除
 
     # 排行榜记录类页面
-    path("record/", views.record_rank),#排行榜记录展示
-    path("record/<int:rid>/edit", views.record_edit),#排行榜记录编辑
-    path("record/<int:rid>/delete",views.record_delete), #排行榜记录删除
-    path("record/analysis",views.record_analysis),#排行榜记录分析
+    path("record/", views.record_rank),  # 排行榜记录展示
+    path("record/<int:rid>/edit", views.record_edit),  # 排行榜记录编辑
+    path("record/<int:rid>/delete", views.record_delete),  # 排行榜记录删除
+    path("record/analysis/", views.record_analysis),  # 排行榜记录分析
+
+    path("char/", views.record_chart),  # 成绩分析图表生成URL
 ]
